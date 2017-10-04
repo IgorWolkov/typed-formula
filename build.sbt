@@ -2,7 +2,7 @@ name := "typed-formula"
 
 organization := "karazinscalausersgroup"
 
-version := "0.1.0"
+version := "0.1.0-SNAPSHOT"
 
 scalaVersion := "2.12.3"
 
