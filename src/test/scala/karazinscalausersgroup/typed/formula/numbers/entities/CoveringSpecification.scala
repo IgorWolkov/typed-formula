@@ -7,7 +7,6 @@ import karazinscalausersgroup.typed.formula.numbers.generators.{DoubleValue, Int
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
 import karazinscalausersgroup.typed.formula.numbers.builder._
-//import karazinscalausersgroup.typed.formula.accounting.covering4._
 import karazinscalausersgroup.typed.formula.numbers.covering._
 import karazinscalausersgroup.typed.formula.numbers.operations._
 import karazinscalausersgroup.typed.formula.numbers.replacer._
