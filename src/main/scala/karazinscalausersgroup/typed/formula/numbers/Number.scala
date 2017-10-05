@@ -33,11 +33,12 @@ trait Number {
 
 object Number {
 
-  implicit def apply(int: Int): IntNumber = IntNumber(int)
-
-  implicit def apply(long: Long): LongNumber = LongNumber(long)
-
-  implicit def apply(double: Double): DoubleNumber = DoubleNumber(double)
+  implicit def apply[T](v: T): Number =
+    v match {
+      case int: Int       => IntNumber(int)
+      case long: Long     => LongNumber(long)
+      case double: Double => DoubleNumber(double)
+    }
 
   val Zero: Number = IntNumber(0)
   val One: Number = IntNumber(1)
