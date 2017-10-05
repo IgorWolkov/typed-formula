@@ -300,6 +300,8 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
         (NextPrincipal      `with value of` ~[`Early repayment rate` * NextPrincipal]) :: HNil
     ]
 
+    
+
     val (_, updatedEvent) = cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, context)
 
     // Check result
