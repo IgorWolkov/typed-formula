@@ -44,7 +44,7 @@ trait LoanEntity extends Entity[Number, LoanEvent]
 
 trait ValueLoanEntity extends LoanEntity with ValueEntity[Number, LoanEvent]
 
-case class Covering(amount: Number) extends ValueLoanEntity {
+case class Covering(amount: Number, description: String) extends ValueLoanEntity {
   type Self = Covering
 
   def v: Number = amount

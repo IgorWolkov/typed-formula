@@ -60,7 +60,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
 
   // Operations on folds
   property("Value of sum of PreviousIntValue is equals to sum of values of PreviousIntValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[PreviousIntValue].v
     val expected = `value of`[PreviousIntValue]
@@ -69,7 +69,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of PreviousLongValue is equals to sum of values of PreviousLongValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[PreviousLongValue].v
     val expected = `value of`[PreviousLongValue]
@@ -78,7 +78,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of PreviousDoubleValue is equals to sum of values of PreviousDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[PreviousDoubleValue].v
     val expected = `value of`[PreviousDoubleValue]
@@ -87,7 +87,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of CurrentIntValue is equals to sum of values of CurrentIntValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[CurrentIntValue].v
     val expected = `value of`[CurrentIntValue]
@@ -96,7 +96,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of CurrentLongValue is equals to sum of values of CurrentLongValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[CurrentLongValue].v
     val expected = `value of`[CurrentLongValue]
@@ -105,7 +105,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of CurrentDoubleValue is equals to sum of values of CurrentDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[CurrentDoubleValue].v
     val expected = `value of`[CurrentDoubleValue]
@@ -114,7 +114,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of NextIntValue is equals to sum of values of NextIntValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[NextIntValue].v
     val expected = `value of`[NextIntValue]
@@ -123,7 +123,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of NextLongValue is equals to sum of values of NextLongValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[NextLongValue].v
     val expected = `value of`[NextLongValue]
@@ -132,7 +132,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of NextDoubleValue is equals to sum of values of NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = Σ[NextDoubleValue].v
     val expected = `value of`[NextDoubleValue]
@@ -141,7 +141,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of sums of PreviousIntValue, PreviousLongValue and PreviousDoubleValue is equals to sum of sums of values of PreviousIntValue, PreviousLongValue and PreviousDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val previousIntValues = entities[PreviousIntValue]
     val previousLongValues = entities[PreviousLongValue]
@@ -156,7 +156,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of subtractions of PreviousIntValue, PreviousLongValue and PreviousDoubleValue is equals to sum of subtractions of values of PreviousIntValue, PreviousLongValue and PreviousDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val previousIntValues = entities[PreviousIntValue]
     val previousLongValues = entities[PreviousLongValue]
@@ -172,7 +172,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
 
 
   property("Value of sum of products of PreviousIntValue, PreviousLongValue and PreviousDoubleValue is equals to sum of products of values of PreviousIntValue, PreviousLongValue and PreviousDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val previousIntValues = entities[PreviousIntValue]
     val previousLongValues = entities[PreviousLongValue]
@@ -187,7 +187,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of divisions of PreviousIntValue, PreviousLongValue and PreviousDoubleValue is equals to sum of divisions of values of PreviousIntValue, PreviousLongValue and PreviousDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val previousIntValues = entities[PreviousIntValue]
     val previousLongValues = entities[PreviousLongValue]
@@ -202,7 +202,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of sums of CurrentIntValue, CurrentLongValue and CurrentDoubleValue is equals to sum of sums of values of CurrentIntValue, CurrentLongValue and CurrentDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val currentIntValues = entities[CurrentIntValue]
     val currentLongValues = entities[CurrentLongValue]
@@ -215,7 +215,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of subtractions of CurrentIntValue, CurrentLongValue and CurrentDoubleValue is equals to sum of subtractions of values of CurrentIntValue, CurrentLongValue and CurrentDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val currentIntValues = entities[CurrentIntValue]
     val currentLongValues = entities[CurrentLongValue]
@@ -228,7 +228,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of products of CurrentIntValue, CurrentLongValue and CurrentDoubleValue is equals to sum of products of values of CurrentIntValue, CurrentLongValue and CurrentDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val currentIntValues = entities[CurrentIntValue]
     val currentLongValues = entities[CurrentLongValue]
@@ -241,7 +241,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of divisions of CurrentIntValue, CurrentLongValue and CurrentDoubleValue is equals to sum of products of divisions of CurrentIntValue, CurrentLongValue and CurrentDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val currentIntValues = entities[CurrentIntValue]
     val currentLongValues = entities[CurrentLongValue]
@@ -254,7 +254,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of sums of NextIntValue, NextLongValue and NextDoubleValue is equals to sum of sums of values of NextIntValue, NextLongValue and NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val nextIntValues = entities[NextIntValue]
     val nextLongValues = entities[NextLongValue]
@@ -269,7 +269,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of subtractions of NextIntValue, NextLongValue and NextDoubleValue is equals to sum of subtractions of values of NextIntValue, NextLongValue and NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val nextIntValues = entities[NextIntValue]
     val nextLongValues = entities[NextLongValue]
@@ -284,7 +284,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of products of NextIntValue, NextLongValue and NextDoubleValue is equals to sum of products of values of NextIntValue, NextLongValue and NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val nextIntValues = entities[NextIntValue]
     val nextLongValues = entities[NextLongValue]
@@ -299,7 +299,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sum of divisions of NextIntValue, NextLongValue and NextDoubleValue is equals to sum of divisions of values of NextIntValue, NextLongValue and NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val nextIntValues = entities[NextIntValue]
     val nextLongValues = entities[NextLongValue]
@@ -314,7 +314,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sums of PreviousIntValue, CurrentLongValue and NextDoubleValue is equals to sums of values of PreviousIntValue, CurrentLongValue and NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val result = (Σ[PreviousIntValue] + Σ[CurrentLongValue] + Σ[NextDoubleValue]).v
     val expected = `value of`[PreviousIntValue] + `value of`[CurrentLongValue] + `value of`[NextDoubleValue]
@@ -323,7 +323,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
   }
 
   property("Value of sums of sum of product of PreviousIntValue and PreviousLongValue and sum of sum of CurrentLongValue and CurrentDoubleValue and sum of division of NextIntValue and NextDoubleValue is equals to sums of sum of product of values of PreviousIntValue and PreviousLongValue and sum of sum of values of  CurrentLongValue and CurrentDoubleValue and sum of division of values of NextIntValue and NextDoubleValue") = forAll { implicit foldable: Foldable[Number, Foldable[Number, Value[Number]]] =>
-    implicit val defaults: Seq[Value[Number]] = Seq.empty
+    implicit val defaults: List[Value[Number]] = Nil
 
     val previousIntValues = entities[PreviousIntValue]
     val previousLongValues = entities[PreviousLongValue]
@@ -354,7 +354,7 @@ object OperationsSpecification extends Properties("OperationsSpecification") {
 
   property("Value of sum of sum of product of FirstConstantValue and PreviousIntValue and product of SecondConstantValue and sum of CurrentLongValue is equals to sum of sum of product of values of FirstConstantValue and PreviousIntValue and product of value of SecondConstantValue and sum of values of CurrentLongValue") = forAll { (foldable: Foldable[Number, Foldable[Number, Value[Number]]], firstConstant: FirstConstantValue, secondConstant: SecondConstantValue) =>
     implicit val f: Foldable[Number, Foldable[Number, Value[Number]]] = foldable
-    implicit val defaults: Seq[Value[Number]] = Seq(firstConstant, secondConstant)
+    implicit val defaults: List[Value[Number]] = List(firstConstant, secondConstant)
 
     val result = (Σ[FirstConstantValue * PreviousIntValue] + secondConstant * Σ[CurrentLongValue]).v
 

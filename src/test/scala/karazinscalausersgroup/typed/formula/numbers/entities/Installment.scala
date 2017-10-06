@@ -25,17 +25,17 @@ trait InstallmentEntity extends ValueLoanEntity with FoldableLoanEntity[Covering
           (copyEntity(), event)
         } else if (eventAmount <= eventLimit) {
           if (entityAmount + eventAmount < Number(0) || entityAmount + eventAmount == Number(0)) {
-            (copyEntities( expressions ::: Covering(eventAmount) :: Nil), EmptyLoanEvent(event.description))
+            (copyEntities( expressions ::: Covering(eventAmount, e.description) :: Nil), EmptyLoanEvent(event.description))
           } else {
-            (copyEntities(expressions ::: Covering(Number(0) - entityAmount) :: Nil),
+            (copyEntities(expressions ::: Covering(Number(0) - entityAmount, e.description) :: Nil),
               NonEmptyLoanEvent(eventAmount + entityAmount, event.description))
           }
         }
         else {
-          if (entityAmount + eventLimit < Number(0) || entityAmount + eventLimit == Number(0)) {
-            (copyEntities(expressions ::: Covering(eventLimit) :: Nil), NonEmptyLoanEvent(eventAmount - eventLimit, event.description))
+          if (entityAmount + eventLimit < Zero || entityAmount + eventLimit == Zero) {
+            (copyEntities(expressions ::: Covering(eventLimit, e.description) :: Nil), NonEmptyLoanEvent(eventAmount - eventLimit, event.description))
           } else {
-            (copyEntities(expressions ::: Covering(Number(0) - entityAmount) :: Nil), NonEmptyLoanEvent(eventAmount + entityAmount, event.description))
+            (copyEntities(expressions ::: Covering(-entityAmount, e.description) :: Nil), NonEmptyLoanEvent(eventAmount + entityAmount, event.description))
           }
         }
 
@@ -46,6 +46,8 @@ trait InstallmentEntity extends ValueLoanEntity with FoldableLoanEntity[Covering
 
 abstract class Installment(val entities: List[InstallmentEntity]) extends FoldableLoanEntity[InstallmentEntity] {
   type Self <: Installment
+
+  lazy val amount = v
 }
 
 // TODO: Add macros to generate this boilerplate
@@ -53,12 +55,11 @@ case class PreviousInstallment(expressions: List[InstallmentEntity]) extends Ins
 
   type Self = PreviousInstallment
 
-  val amount = Zero
-
   def copyEntity(): Self = copy()
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
+  // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
 
   override def toString = s"PreviousInstallment(${expressions map { _.toString }  mkString ", "})"
@@ -70,12 +71,11 @@ case class CurrentInstallment(expressions: List[InstallmentEntity]) extends Inst
 
   override type Self = CurrentInstallment
 
-  val amount = Zero
-
   def copyEntity(): Self = copy()
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
+  // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
 
   override def toString = s"CurrentInstallment(${expressions map { _.toString }  mkString ", "})"
@@ -87,14 +87,28 @@ case class NextInstallment(expressions: List[InstallmentEntity]) extends Install
 
   override type Self = NextInstallment
 
-  val amount = Zero
+  def copyEntity(): Self = copy()
+
+  def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
+
+  // TODO: Add logic
+  def applyEvent(event: LoanEvent) = ???
+
+  override def toString = s"NextInstallment(${expressions map { _.toString }  mkString ", "})"
+
+}
+
+case class ExtraInstallment(expressions: List[InstallmentEntity]) extends Installment(expressions) {
+
+  override type Self = ExtraInstallment
 
   def copyEntity(): Self = copy()
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
+  // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
 
-  override def toString = s"NextInstallment(${expressions map { _.toString }  mkString ", "})"
+  override def toString = s"ExtraInstallment(${expressions map { _.toString }  mkString ", "})"
 
 }

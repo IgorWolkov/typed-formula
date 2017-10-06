@@ -31,7 +31,7 @@ object covering {
       FE1 <: FoldableEntity[Number, E, FE0] { def copyEntities(expressions: List[FE0]): FE1 },
       FE2 <: FoldableEntity[Number, E, FE1] { def copyEntities(expressions: List[FE1]): FE2 }
     ]
-    (entity: FE2, event: E, defaults: Seq[Value[Number]]): (FE2, E) = {
+    (entity: FE2, event: E, defaults: List[Value[Number]]): (FE2, E) = {
 
       // TODO: Get rif of var
       var eventAcc: E = event
@@ -83,7 +83,7 @@ object covering {
     ]
     (implicit
      foldable2: FE2,
-     defaults: Seq[Value[Number]],
+     defaults: List[Value[Number]],
      expressionReplacer: ExpressionReplacer[Number, NEA#Ent],
      expressionBuilder: ExpressionBuilder[Number, NEA#Expr],
      entityBuilder: ExpressionBuilder[Number, NEA#Ent]
@@ -104,7 +104,7 @@ object covering {
     ]
     (implicit
      foldable2: FE2,
-     defaults: Seq[Value[Number]],
+     defaults: List[Value[Number]],
      expressionReplacer: ExpressionReplacer[Number, NEA#Ent],
      expressionBuilder: ExpressionBuilder[Number, NEA#Expr],
      entityBuilder: ExpressionBuilder[Number, NEA#Ent]

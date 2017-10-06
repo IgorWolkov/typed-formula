@@ -72,13 +72,13 @@ object operations {
   object Σ {
     def apply[E <: Expression[Number]](implicit
                                        foldable2: Foldable[Number, Foldable[Number, Value[Number]]],
-                                       defaults: Seq[Value[Number]],
+                                       defaults: List[Value[Number]],
                                        builder: ExpressionBuilder[Number, E]): Σ[E] =
       new Σ(foldable2, defaults, builder)
   }
 
   class Σ[E <: Expression[Number]](foldable2: Foldable[Number, Foldable[Number, Value[Number]]],
-                                   defaults: Seq[Value[Number]],
+                                   defaults: List[Value[Number]],
                                    builder: ExpressionBuilder[Number, E]) extends Expression[Number] {
     val v: Number =
       (foldable2.expressions flatMap { foldable1 =>

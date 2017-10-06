@@ -1,7 +1,5 @@
 package karazinscalausersgroup.typed.formula.numbers.entities
 
-import karazinscalausersgroup.typed.formula.numbers.Number.Zero
-
 /**
   * @author Igor Wolkov
   */
@@ -10,12 +8,13 @@ case class Loan(expressions: List[Installment]) extends FoldableLoanEntity[Insta
 
   override type Self = Loan
 
-  val amount = Zero
+  lazy val amount = v
 
   def copyEntity(): Self = copy()
 
   def copyEntities(expressions: List[Installment]): Self = copy(expressions)
 
+  // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
 
   override def toString = s"Loan(${expressions map { _.toString }  mkString ", "})"
