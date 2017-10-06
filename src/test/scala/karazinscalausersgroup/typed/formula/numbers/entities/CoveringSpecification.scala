@@ -2,7 +2,7 @@ package karazinscalausersgroup.typed.formula.numbers.entities
 
 import karazinscalausersgroup.typed.formula.Value
 import karazinscalausersgroup.typed.formula.numbers.BuilderSpecification.{`prove builder`, property}
-import karazinscalausersgroup.typed.formula.numbers.Number
+import karazinscalausersgroup.typed.formula.numbers.Number.Zero
 import karazinscalausersgroup.typed.formula.numbers.generators.{DoubleValue, IntValue, LongValue}
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
@@ -63,26 +63,26 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
 
     Installment term     = 30 days - monthly installment
     Term of usage        = 15 days (for example) - how many days customer uses loan for current installment
-    Early repayment rate = 3% (for example) coefficient for the rest of principals
+    Early repayment rate = 5% (for example) coefficient for the rest of principals
 
     Early repayment balance =
       Σ(Previous Principal + Previous Interest + Previous Fine Fee) +
       Current Interest + (Term of usage / Installment term) * Current Interest +
+      Σ(Next Principal) +
       Early repayment rate * Σ(Next Principal)
 
-    Early repayment balance = -81.55
+    Early repayment balance = -219.25
 
   */
 
-  object LoanContext {
     // Installment 1 (previous)
-    val previousPrincipal1 = PreviousPrincipal(-15L, Covering(15) :: Nil)
-    val previousInterest1 = PreviousInterest(-85L, Covering(75) :: Covering(10) :: Nil)
+    val previousPrincipal1 = PreviousPrincipal(-15L, Covering(15, "Payment #1") :: Nil)
+    val previousInterest1 = PreviousInterest(-85L, Covering(75, "Payment #1") :: Covering(10, "Payment #2") :: Nil)
     val installment1 = PreviousInstallment(List(previousInterest1, previousPrincipal1))
 
     // Installment 2 (previous)
-    val previousPrincipal2 = PreviousPrincipal(-30L, Covering(30) :: Nil)
-    val previousInterest2 = PreviousInterest(-70L, Covering(70) :: Nil)
+    val previousPrincipal2 = PreviousPrincipal(-30L, Covering(30, "Payment #3") :: Nil)
+    val previousInterest2 = PreviousInterest(-70L, Covering(70, "Payment #3") :: Nil)
     val previousFineFee = PreviousFineFee(-5L)
     val installment2 = PreviousInstallment(List(previousInterest2, previousPrincipal2, previousFineFee))
 
@@ -101,7 +101,7 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
     val nextInterest2 = NextInterest(-25L)
     val installment5 = NextInstallment(List(nextInterest2, nextPrincipal2))
 
-    implicit val loan: Loan = Loan(installment1 :: installment2 :: installment3 :: installment4 :: installment5 :: Nil)
+    val loan: Loan = Loan(installment1 :: installment2 :: installment3 :: installment4 :: installment5 :: Nil)
 
     // Custom coefficient
     // Every coefficient should be defined as new type
@@ -113,24 +113,22 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
 
     implicit val termOfUsage: `Term of usage` = `Term of usage`(15)
     implicit val installmentTerm: `Installment term` = `Installment term`(30)
-    implicit val `3%`: `Early repayment rate` = `Early repayment rate`(0.03)
+    implicit val `5%`: `Early repayment rate` = `Early repayment rate`(0.05)
 
     // We don't have PreviousFineFee in all Previous Installments
     // and CurrentFineFee in Current Installment
     // but they potentially can be and
     // and can take part in formulas
-    val defaults: Seq[Value[Number]] =
-    Seq(PreviousFineFee(0), CurrentFineFee(0))
+    implicit val defaults: List[Value[Number]] =
+      List(PreviousFineFee(0), CurrentFineFee(0), termOfUsage, installmentTerm, `5%`)
 
-    implicit val context: Seq[Value[Number]] =
-      defaults ++ Seq(termOfUsage, installmentTerm, `3%`)
-  }
 
   property("""|Current balance should be calculated by
               |      Σ(Previous Principal + Previous Interest + Previous Fine Fee)
               |      Current Principal + Current Interest + Current Fine Fee
               |formula""".stripMargin) = {
-    import LoanContext._
+
+    implicit val local: Loan = loan
 
     // Yep, it's like a formula
     // Here `Σ` and `+` are types
@@ -146,7 +144,8 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
               |      Current Principal + Current Interest + Current Fine Fee +
               |      Σ(Next Principal + Next Interest + Next Fine Fee)
               |formula""".stripMargin) = {
-    import LoanContext._
+
+    implicit val local: Loan = loan
 
     val totalBalance =
       Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
@@ -161,17 +160,21 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
               |      Current Interest + (Term of usage / Installment term) * Current Interest +
               |      Early repayment rate * Σ(Next Principal)
               |formula""".stripMargin) = {
-    import LoanContext._
+
+    implicit val local: Loan = loan
 
     val earlyRepaymentBalance =
       Σ[PreviousInterest + PreviousPrincipal + PreviousFineFee] +
       Σ[CurrentPrincipal + ((CurrentInterest * `Term of usage`) / `Installment term`) + CurrentFineFee] +
-      `3%` * Σ[NextPrincipal]
+      Σ[NextPrincipal] +
+      `5%` * Σ[NextPrincipal]
 
-    earlyRepaymentBalance.v == Number(-81.55)
+    println()
+
+    earlyRepaymentBalance.v == Number(-219.25)
   }
 
-  property("""Cover Current Installment Partially""".stripMargin) = {
+  property("Cover current debt Fully") = {
 
     /*
       How can you see from the early repayment balance formula
@@ -184,133 +187,219 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
 
           CurrentInterest `with value of` ~[`1/2` * CurrentInterest]
 
-      Note: you should cover with inversed sign, that's why we use ~[] (it's `tilda`)
+      Note: you should cover with inverted sign, that's why we use ~[] (it's `tilda`)
       We can't use minus sign `-` instead of `~` because we use `-` for binary minus
-      */
+    */
 
-
-    // We need to separate spaces because we use
-    // implicit value of Loan
-    def `covering space`: (Loan, LoanEvent) = {
-      import LoanContext._
-
-      val cover =
-        Cover[
-          (CurrentPrincipal `with value of` ~[CurrentPrincipal]) ::
-          (CurrentInterest `with value of` ~[CurrentInterest]) :: HNil
-        ]
-
-      val event = LoanEvent(Number(90L), "In Payment #1")
-
-      // Cover CurrentPrincipal and CurrentInterest with event
-      // Unfortunately for now we have to list all generic types
-      // But we are working on how to get rid of them
-      cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
-    }
-
-    def `recalculations space`(newContext: (Loan, LoanEvent)): Boolean = {
-      import LoanContext.context
-      implicit val (updatedLoan, updatedEvent) = newContext
-
+    Option(loan) map { implicit loan =>
       val currentBalance =
         Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
         Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee]
 
-      // We forgot to cover Previous Fine Fee (-5) from Previous Installment
-      // and we don't have enough money to cover CurrentInterest wholly
-      currentBalance.v == Number(-15) &&
-      updatedEvent.description == "In Payment #1" &&
-      updatedEvent.isInstanceOf[EmptyLoanEvent]
-    }
+      // Don't forget take the value with `-`
+      (loan, -currentBalance.v)
+    } map {
+      case (loan, currentBalance) =>
 
-    `recalculations space`(`covering space`)
+        val event = LoanEvent(currentBalance, "In Payment #1")
+
+        (loan, event)
+    } map {
+      case (l, event) =>
+        implicit val loan: Loan = l
+
+        val cover =
+          Cover[
+              (PreviousPrincipal  `with value of` ~[PreviousPrincipal]) ::
+              (PreviousInterest   `with value of` ~[PreviousInterest]) ::
+              (PreviousFineFee    `with value of` ~[PreviousFineFee]) ::
+              (CurrentPrincipal   `with value of` ~[CurrentPrincipal]) ::
+              (CurrentInterest    `with value of` ~[CurrentInterest]) ::
+              (CurrentFineFee     `with value of` ~[CurrentFineFee]) :: HNil
+            ]
+
+        cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
+    } map {
+      case (l, event) =>
+        implicit val loan: Loan = l
+
+        val currentBalance =
+          Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
+          Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee]
+
+        currentBalance.v == Zero &&
+          event.description == "In Payment #1" &&
+          event.isInstanceOf[EmptyLoanEvent]
+    } get
   }
 
-  property("""Cover Loan with Early Repayment and check new loan structure""".stripMargin) = {
+  property("Cover current debt partially") = {
 
-    import LoanContext._
+    val delta = -Number(15)
 
-    val cover =
-      Cover[
-        (PreviousPrincipal  `with value of` ~[PreviousPrincipal]) ::
-        (PreviousInterest   `with value of` ~[PreviousInterest]) ::
-        (PreviousFineFee    `with value of` ~[PreviousFineFee]) ::
-        (CurrentPrincipal   `with value of` ~[CurrentPrincipal]) ::
-        (CurrentInterest    `with value of` ~[(CurrentInterest * `Term of usage`) / `Installment term`]) ::
-        (NextPrincipal      `with value of` ~[`Early repayment rate` * NextPrincipal]) :: HNil
-      ]
+    Option(loan) map { implicit loan =>
+      val currentBalance =
+        Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
+        Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee]
 
-    val event = LoanEvent(Number(90L), "In Payment #2")
+      (loan, -currentBalance.v)
+    } map {
+      case (loan, currentBalance) =>
 
-    val (updatedLoan, updatedEvent) = cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, context)
+        val event = LoanEvent(currentBalance + delta, "In Payment #1")
 
-    // Review lines with note /*New covering*/
-    // Installment 1 (previous)
-    val previousPrincipal1 = PreviousPrincipal(-15L, Covering(15) :: Nil)
-    val previousInterest1 = PreviousInterest(-85L, Covering(75) :: Covering(10) :: Nil)
-    val installment1 = PreviousInstallment(List(previousInterest1, previousPrincipal1))
+        (loan, event)
+    } map {
+      case (l, event) =>
+        implicit val loan: Loan = l
 
-    // Installment 2 (previous)
-    val previousPrincipal2 = PreviousPrincipal(-30L, Covering(30) :: Nil)
-    val previousInterest2 = PreviousInterest(-70L, Covering(70) :: Nil)
-    val previousFineFee = PreviousFineFee(-5L, /*New covering*/Covering(5L) :: Nil)
-    val installment2 = PreviousInstallment(List(previousInterest2, previousPrincipal2, previousFineFee))
+        val cover =
+          Cover[
+            (PreviousPrincipal  `with value of` ~[PreviousPrincipal]) ::
+            (PreviousInterest   `with value of` ~[PreviousInterest]) ::
+            (PreviousFineFee    `with value of` ~[PreviousFineFee]) ::
+            (CurrentPrincipal   `with value of` ~[CurrentPrincipal]) ::
+            (CurrentInterest    `with value of` ~[CurrentInterest]) ::
+            (CurrentFineFee     `with value of` ~[CurrentFineFee]) :: HNil
+          ]
 
-    // Installment 3 (current)
-    val currentPrincipal = CurrentPrincipal(-45L, /*New covering*/Covering(45L) :: Nil)
-    val currentInterest = CurrentInterest(-55L, /*New covering*/Covering(27.5) :: Nil)
-    val installment3 = CurrentInstallment(List(currentInterest, currentPrincipal))
+        cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
+    } map {
+      case (l, event) =>
+        implicit val loan: Loan = l
 
-    // Installment 4 (next)
-    val nextPrincipal1 = NextPrincipal(-60L, /*New covering*/Covering(1.7999999999999998) :: Nil)
-    val nextInterest1 = NextInterest(-40L)
-    val installment4 = NextInstallment(List(nextInterest1, nextPrincipal1))
+        val currentBalance =
+          Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
+          Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee]
 
-    // Installment 5 (next)
-    val nextPrincipal2 = NextPrincipal(-75L, /*New covering*/Covering(2.25) :: Nil)
-    val nextInterest2 = NextInterest(-25L)
-    val installment5 = NextInstallment(List(nextInterest2, nextPrincipal2))
-
-    val expectedLoan: Loan = Loan(installment1 :: installment2 :: installment3 :: installment4 :: installment5 :: Nil)
-
-    // Verify results
-    expectedLoan == updatedLoan &&
-      // 8.45 = 90 - Early Repayment amount. Lets check in the next test
-      updatedEvent == NonEmptyLoanEvent(Number(8.45), "In Payment #2")
+      currentBalance.v == delta &&
+        event.description == "In Payment #1" &&
+        event.isInstanceOf[EmptyLoanEvent]
+    } get
   }
 
+  property("Cover total debt fully") = {
 
-  property("""Cover Loan with Early Repayment and check event calculations""".stripMargin) = {
-    import LoanContext._
+    Option(loan) map { implicit loan =>
+      val totalBalance =
+        Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
+        Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee] +
+        Σ[NextPrincipal + NextInterest]
 
-    val earlyRepaymentAmount =
-      Σ[PreviousInterest + PreviousPrincipal + PreviousFineFee] +
-      Σ[CurrentPrincipal + ((CurrentInterest * `Term of usage`) / `Installment term`) + CurrentFineFee] +
-      `3%` * Σ[NextPrincipal]
+      // Don't forget take the value with `-`
+      (loan, -totalBalance.v)
+    } map {
+      case (loan, currentBalance) =>
 
-    val event = LoanEvent(Number(90L), "In Payment #2")
+        val event = LoanEvent(currentBalance, "In Payment #1")
 
-    val cover =
-      Cover[
-        (PreviousPrincipal  `with value of` ~[PreviousPrincipal]) ::
-        (PreviousInterest   `with value of` ~[PreviousInterest]) ::
-        (PreviousFineFee    `with value of` ~[PreviousFineFee]) ::
-        (CurrentPrincipal   `with value of` ~[CurrentPrincipal]) ::
-        (CurrentInterest    `with value of` ~[(CurrentInterest * `Term of usage`) / `Installment term`]) ::
-        (NextPrincipal      `with value of` ~[`Early repayment rate` * NextPrincipal]) :: HNil
-    ]
+        (loan, event)
+    } map {
+      case (l, event) =>
+        implicit val loan: Loan = l
 
-    val (_, updatedEvent) = cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, context)
+        val cover =
+          Cover[
+              (PreviousPrincipal  `with value of` ~[PreviousPrincipal]) ::
+              (PreviousInterest   `with value of` ~[PreviousInterest]) ::
+              (PreviousFineFee    `with value of` ~[PreviousFineFee]) ::
+              (CurrentPrincipal   `with value of` ~[CurrentPrincipal]) ::
+              (CurrentInterest    `with value of` ~[CurrentInterest]) ::
+              (CurrentFineFee     `with value of` ~[CurrentFineFee]) ::
+              (NextPrincipal      `with value of` ~[NextPrincipal]) ::
+              (NextInterest       `with value of` ~[NextInterest]) :: HNil
+            ]
 
-    // Check result
-    updatedEvent match {
-      case NonEmptyLoanEvent(value, _) =>
-        // TODO: Fix magic number
-        // Issue with double precision
-        value + Number(0.000000000000003) == event.value + earlyRepaymentAmount.v
+        cover.applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
+    } map {
+      case (l, event) =>
+        implicit val loan: Loan = l
 
-      case EmptyLoanEvent(_)           => false
-    }
+        val currentBalance =
+          Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
+            Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee]
+
+        currentBalance.v == Zero &&
+          event.description == "In Payment #1" &&
+          event.isInstanceOf[EmptyLoanEvent]
+    } get
+  }
+
+  property("Cover loan with early repayment") = {
+
+    Option(loan) map { implicit loan =>
+
+      val earlyRepaymentFeeAmount = (`5%` * Σ[NextPrincipal]).v
+
+      (loan, earlyRepaymentFeeAmount)
+
+    } map {
+      case (loan, earlyRepaymentFeeAmount) =>
+
+        loan.addInstallment(ExtraInstallment(EarlyRepaymentFee(earlyRepaymentFeeAmount) :: Nil))
+
+    } map { implicit loan =>
+
+      val earlyRepaymentAmount =
+        Σ[PreviousInterest + PreviousPrincipal + PreviousFineFee] +
+        Σ[CurrentPrincipal + ((CurrentInterest * `Term of usage`) / `Installment term`) + CurrentFineFee] +
+        Σ[NextPrincipal] +
+        Σ[EarlyRepaymentFee]
+
+      (loan, -earlyRepaymentAmount.v)
+    } map {
+      case (loan, earlyRepaymentAmount) =>
+
+        val event = LoanEvent(earlyRepaymentAmount, "Early repayment Payment #1")
+
+        (loan, event)
+    } map {
+      case (l, event) =>
+        implicit val loan = l
+
+        Cover[
+            (PreviousPrincipal  `with value of` ~[PreviousPrincipal]) ::
+            (PreviousInterest   `with value of` ~[PreviousInterest]) ::
+            (PreviousFineFee    `with value of` ~[PreviousFineFee]) ::
+            (CurrentPrincipal   `with value of` ~[CurrentPrincipal]) ::
+            (CurrentInterest    `with value of` ~[(CurrentInterest * `Term of usage`) / `Installment term`]) ::
+      (NextPrincipal      `with value of` ~[NextPrincipal]) ::
+      (EarlyRepaymentFee  `with value of` ~[EarlyRepaymentFee]) :: HNil
+      ].applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
+
+    } map {
+      case (l, _) =>
+        implicit val loan = l
+
+        val cancellationAmount =
+          Σ[CurrentInterest] + Σ[NextInterest]
+
+        (loan, -cancellationAmount.v)
+    } map {
+      case (loan, cancellationAmount) =>
+        val event = LoanEvent(cancellationAmount, "Early repayment Cancellation #1")
+
+        (loan, event)
+    } map {
+      case (l, event) =>
+        implicit val loan = l
+
+        Cover[
+          (CurrentInterest  `with value of` ~[CurrentInterest]) ::
+            (NextInterest     `with value of` ~[NextInterest]) :: HNil
+          ].applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
+
+    } map {
+      case (l, _) =>
+        implicit val loan = l
+
+        val totalBalance =
+          Σ[PreviousPrincipal + PreviousInterest + PreviousFineFee] +
+          Σ[CurrentPrincipal + CurrentInterest + CurrentFineFee] +
+          Σ[NextPrincipal + NextInterest]
+
+        totalBalance.v == Zero
+    } get
   }
 
 }
