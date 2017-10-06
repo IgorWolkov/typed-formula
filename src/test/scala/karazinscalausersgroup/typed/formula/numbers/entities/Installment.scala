@@ -59,6 +59,11 @@ case class PreviousInstallment(expressions: List[InstallmentEntity]) extends Ins
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
+  def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
+
+  def addEntities(entities: List[InstallmentEntity]): Self = copyEntities(expressions ::: entities)
+
+
   // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
 
@@ -74,6 +79,11 @@ case class CurrentInstallment(expressions: List[InstallmentEntity]) extends Inst
   def copyEntity(): Self = copy()
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
+
+  def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
+
+  def addEntities(entities: List[InstallmentEntity]): Self = copyEntities(expressions ::: entities)
+
 
   // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
@@ -91,6 +101,11 @@ case class NextInstallment(expressions: List[InstallmentEntity]) extends Install
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
+  def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
+
+  def addEntities(entities: List[InstallmentEntity]): Self = copyEntities(expressions ::: entities)
+
+
   // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
 
@@ -105,6 +120,10 @@ case class ExtraInstallment(expressions: List[InstallmentEntity]) extends Instal
   def copyEntity(): Self = copy()
 
   def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
+
+  def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
+
+  def addEntities(entities: List[InstallmentEntity]): Self = copyEntities(expressions ::: entities)
 
   // TODO: Add logic
   def applyEvent(event: LoanEvent) = ???
