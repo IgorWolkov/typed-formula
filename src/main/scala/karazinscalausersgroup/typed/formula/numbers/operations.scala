@@ -70,6 +70,18 @@ object operations {
   }
 
   object Σ {
+    def withLoan[E <: Expression[Number]](foldable2: Foldable[Number, Foldable[Number, Value[Number]]])
+                                         (implicit
+                                          defaults: List[Value[Number]],
+                                          builder: ExpressionBuilder[Number, E]): Σ[E] =
+      new Σ(foldable2, defaults, builder)
+
+    def withLoanAndDefaults[E <: Expression[Number]](foldable2: Foldable[Number, Foldable[Number, Value[Number]]],
+                                                     defaults: List[Value[Number]])
+                                                    (implicit
+                                                     builder: ExpressionBuilder[Number, E]): Σ[E] =
+      new Σ(foldable2, defaults, builder)
+
     def apply[E <: Expression[Number]](implicit
                                        foldable2: Foldable[Number, Foldable[Number, Value[Number]]],
                                        defaults: List[Value[Number]],

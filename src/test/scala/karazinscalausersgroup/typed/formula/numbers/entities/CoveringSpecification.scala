@@ -1,20 +1,14 @@
 package karazinscalausersgroup.typed.formula.numbers.entities
 
 import karazinscalausersgroup.typed.formula.Value
-import karazinscalausersgroup.typed.formula.numbers.BuilderSpecification.{`prove builder`, property}
+import karazinscalausersgroup.typed.formula.numbers.Number
 import karazinscalausersgroup.typed.formula.numbers.Number.Zero
-import karazinscalausersgroup.typed.formula.numbers.generators.{DoubleValue, IntValue, LongValue}
-import org.scalacheck.Prop.forAll
-import org.scalacheck.Properties
 import karazinscalausersgroup.typed.formula.numbers.builder._
 import karazinscalausersgroup.typed.formula.numbers.covering._
 import karazinscalausersgroup.typed.formula.numbers.operations._
 import karazinscalausersgroup.typed.formula.numbers.replacer._
-import karazinscalausersgroup.typed.formula.numbers.{AbstractFoldable, Number}
+import org.scalacheck.Properties
 import shapeless._
-import shapeless.ops.hlist._
-
-
 
 import scala.language.postfixOps
 
@@ -289,9 +283,9 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
       // Don't forget take the value with `-`
       (loan, -totalBalance.v)
     } map {
-      case (loan, currentBalance) =>
+      case (loan, totalBalance) =>
 
-        val event = LoanEvent(currentBalance, "In Payment #1")
+        val event = LoanEvent(totalBalance, "In Payment #1")
 
         (loan, event)
     } map {
@@ -386,8 +380,8 @@ object CoveringSpecification extends Properties("CoveringSpecification") {
 
         Cover[
           (CurrentInterest  `with value of` ~[CurrentInterest]) ::
-            (NextInterest     `with value of` ~[NextInterest]) :: HNil
-          ].applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
+          (NextInterest     `with value of` ~[NextInterest]) :: HNil
+        ].applyEvent[LoanEvent, Covering, InstallmentEntity, Installment, Loan](loan, event, defaults)
 
     } map {
       case (l, _) =>
