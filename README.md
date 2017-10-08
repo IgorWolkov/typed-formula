@@ -78,7 +78,7 @@ height: Height = Expression(DoubleNumber(2.0))
 
 ```
 
-Now we can define formulas with custom term
+Now we can define formulas with custom terms
 ```scala
 scala> val area = length * width
 area: Length * Width = (Expression(IntNumber(1)) * Expression(IntNumber(3)))
@@ -213,7 +213,7 @@ volumeOpt: Option[Length * Width * Height] = Some(((Expression(IntNumber(1)) * E
 If it's possible to build formula `build` returns `Some` formula otherwise it returns `None`. For some reasons it may be preferable to fail on compile time if it is impossible to build a formula, but this soft check is necessary for `Σ` operation.
 
 ## Σ
-Suppose there is a series of measurements. We can calculate additive characteristics on this series.  
+Suppose there is a series of measurements. We can calculate additive characteristics for this series.  
 
 ```scala
 import karazinscalausersgroup.typed.formula.Value
@@ -281,7 +281,28 @@ scala> Σ[Length * Width * Height].v
 res1: DoubleNumber = DoubleNumber(630.0)
 ```
 
+Let's define 4th dimension for time: 
+```scala
+  case class Time(value: Long) extends Value[Number] {
+    def v = Number(value)
+  }
+```
+If try to build formula for a volume of hypercube we will get 0 because there is no `Time` in the measurements and we can't build the formula
 
+```scala
+scala> Σ[Length * Width * Height * Time].v
+res3: IntNumber = IntNumber(0)
+```
+
+To resolve this issue we can add some `Time` to `defaults`. Keep in mind that the value of `Time` will be added to each measurements. You can't provide several values for `Time`, only the first value of `Time` from `defaults` will be used.
+
+```scala
+scala> implicit val defaults: List[Value[Number]] = Time(10) :: Nil
+res4: Time = Time(10)
+
+scala> Σ[Length * Width * Height * Time].v
+res5: DoubleNumber = DoubleNumber(6300.0)
+```
 
 Please review test:
 * [How can you build formulas and manipulate with formulas.](https://github.com/IgorWolkov/typed-formula/blob/master/src/test/scala/karazinscalausersgroup/typed/formula/numbers/OperationsSpecification.scala)
