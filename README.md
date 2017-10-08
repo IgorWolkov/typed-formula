@@ -99,6 +99,65 @@ res1: Number = DoubleNumber(6.0)
 
 ```
 
+# Supported operations
+In current version only operations for Numbers are supported.
+
+## Linear operations
+Let's define define two variables
+```scala
+import karazinscalausersgroup.typed.formula.Value
+import karazinscalausersgroup.typed.formula.numbers.{Number, Value}
+import karazinscalausersgroup.typed.formula.numbers.operations._
+
+
+scala> val a = Value[Number](3)
+a: Value[Number] = Expression(IntNumber(3))
+
+scala> val b = Value[Number](5)
+b: Value[Number] = Expression(IntNumber(5))
+```
+
+Typed Formula supports following linear operation: 
+### addition
+```scala
+
+scala> a + b
+res1: Value[Number] + Value[Number] = (Expression(IntNumber(3)) + Expression(IntNumber(5)))
+
+```
+
+### subtraction
+```scala
+scala> a - b
+res2: Value[Number] - Value[Number] = (Expression(IntNumber(3)) - Expression(IntNumber(5)))
+
+```
+
+### unary minus
+Unlike a ```scala unary_``` definitions for ```scala def``` it is impossible to overload types. That's why ```scala~``` (tilde) represents unary minus on type level. However it's possible to use ```scala -``` as unary minus with values.
+```scala
+scala> -a
+res3: ~[Value[Number]] = -Expression(IntNumber(3)))
+
+```
+
+### multiplication
+```scala
+scala> a * b
+res4: Value[Number] * Value[Number] = (Expression(IntNumber(3)) * Expression(IntNumber(5)))
+
+```
+
+### division
+
+```scala
+scala> a / b
+res9: Value[numbers.Number] / Value[numbers.Number] = (Expression(IntNumber(3)) / Expression(IntNumber(5)))
+
+```
+
+
+
 
 Please review test:
 * [How can you build formulas and manipulate with formulas.](https://github.com/IgorWolkov/typed-formula/blob/master/src/test/scala/karazinscalausersgroup/typed/formula/numbers/OperationsSpecification.scala)
