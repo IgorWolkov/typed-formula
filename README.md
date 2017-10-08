@@ -39,15 +39,65 @@ and calculate values
 
 ```scala
 scala> area.v
-res0: Number = IntNumber(3.0)
+res0: Number = IntNumber(3)
 
 scala> volume.v
 res1: Number = DoubleNumber(6.0)
 
 ```
 
+# Custom formulas
+Let's rewrite the example with custom classes form formula terms
+
+```scala
+import karazinscalausersgroup.typed.formula.Value
+import karazinscalausersgroup.typed.formula.numbers.{Number, Value}
+import karazinscalausersgroup.typed.formula.numbers.operations._
 
 
+case class Length(value: Int) extends Value[Number] {
+  def v = Number(value)
+}
+
+case class Width(value: Int) extends Value[Number] {
+  def v = Number(value)
+}
+
+case class Height(value: Double) extends Value[Number] {
+  def v = Number(value)
+}
+
+scala>  val length = Length(1)
+length: Length = Expression(IntNumber(1))
+
+scala> val width = Width(3)
+width: Width = Expression(IntNumber(3))
+
+scala> val height = Height(2.0)
+height: Height = Expression(DoubleNumber(2.0))
+
+```
+
+Now we can define formulas with custom term
+```scala
+scala> val area = length * width
+area: Length * Width = (Expression(IntNumber(1)) * Expression(IntNumber(3)))
+
+scala> val volume = area * height
+volume: Length * Width * Height = ((Expression(IntNumber(1)) * Expression(IntNumber(3))) * Expression(DoubleNumber(2.0)))
+
+```
+
+and calculate values 
+
+```scala
+scala> area.v
+res0: Number = IntNumber(3)
+
+scala> volume.v
+res1: Number = DoubleNumber(6.0)
+
+```
 
 
 Please review test:
