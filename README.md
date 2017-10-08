@@ -251,7 +251,7 @@ scala> val measurements3 = Measurements(Length(7) :: Width(9) :: Height(8.0) :: 
 measurements3: Measurements = Expression(DoubleNumber(24.0))
 ```
 
-And define a foldable entity for series of measurements
+And define an `implicit` foldable entity for series of measurements
 ```scala
 case class Series(expressions: List[Measurements]) extends Foldable[Number, Measurements] {
   lazy val op: (Expression[Number], Measurements) => Expression[Number] = (acc, value) => acc + value
