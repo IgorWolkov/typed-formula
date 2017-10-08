@@ -134,7 +134,7 @@ res2: Value[Number] - Value[Number] = (Expression(IntNumber(3)) - Expression(Int
 ```
 
 ### unary minus
-Unlike a ```scala unary_``` definitions for ```scala def``` it is impossible to overload types. That's why ```scala~``` (tilde) represents unary minus on type level. However it's possible to use ```scala -``` as unary minus with values.
+Unlike `unary_` definitions for methods, it is impossible to overload types. That's why `~` (tilde) represents unary minus on type level. However it's possible to use `-` as unary minus with values.
 ```scala
 scala> -a
 res3: ~[Value[Number]] = -Expression(IntNumber(3)))
