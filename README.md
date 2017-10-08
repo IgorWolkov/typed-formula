@@ -1,6 +1,6 @@
 # Overview
 
-Type Formula allows you write lazy formula in a type safe mode and calculate value when it needed. 
+*type-formula* allows you to write lazy formulas in a type safe mode and calculate a value when it needed. 
 
 # Generic Formulas
 *typed-formula* provides functionality to build formulas for numeric calculations on top of Integers, Longs and Double wrapped into [Numbers](https://github.com/IgorWolkov/typed-formula/blob/master/src/main/scala/karazinscalausersgroup/typed/formula/numbers/Number.scala).
@@ -287,7 +287,7 @@ Let's define 4th dimension for time:
     def v = Number(value)
   }
 ```
-If try to build formula for a volume of hypercube we will get 0 because there is no `Time` in the measurements and we can't build the formula
+If we try to build formula for a volume of hypercube we get 0 because there is no `Time` in the measurements and we can't build the formula
 
 ```scala
 scala> Σ[Length * Width * Height * Time].v
@@ -298,7 +298,7 @@ To resolve this issue we can add some `Time` to `defaults`. Keep in mind that th
 
 ```scala
 scala> implicit val defaults: List[Value[Number]] = Time(10) :: Nil
-res4: Time = Time(10)
+res4: List[Value[Number]] = List(Time(10))
 
 scala> Σ[Length * Width * Height * Time].v
 res5: DoubleNumber = DoubleNumber(6300.0)
