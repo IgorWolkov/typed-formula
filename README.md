@@ -2,8 +2,14 @@
 
 *type-formula* allows you to write lazy formulas in a type safe mode and calculate a value when it needed. 
 
+# Using typed-formula
+Stable version, dependencies and repository are coming soon...
+
+# Useful reach examples
+* [Loan accounting calculations in one day with typed-formula](https://github.com/IgorWolkov/typed-formula/wiki/Loan-accounting-calculations-in-one-day-with-typed-formula)
+
 # Generic Formulas
-*typed-formula* provides functionality to build formulas for numeric calculations on top of Integers, Longs and Double wrapped into [Numbers](https://github.com/IgorWolkov/typed-formula/blob/master/src/main/scala/karazinscalausersgroup/typed/formula/numbers/Number.scala).
+*typed-formula* provides functionality to build formulas for numeric calculations on top of Integers, Longs and Double wrapped into [Number](https://github.com/IgorWolkov/typed-formula/blob/master/src/main/scala/karazinscalausersgroup/typed/formula/numbers/Number.scala)s.
 
 Let's define simple formulas to calculate area and a volume of a figure.
 Firstly define measurements.
@@ -303,7 +309,3 @@ res4: List[Value[Number]] = List(Time(10))
 scala> Σ[Length * Width * Height * Time].v
 res5: DoubleNumber = DoubleNumber(6300.0)
 ```
-
-Please review test:
-* [How can you build formulas and manipulate with formulas.](https://github.com/IgorWolkov/typed-formula/blob/master/src/test/scala/karazinscalausersgroup/typed/formula/numbers/OperationsSpecification.scala)
-* [How build loan booking accounting calculations in 1 day.](https://github.com/IgorWolkov/typed-formula/blob/master/src/test/scala/karazinscalausersgroup/typed/formula/numbers/entities/CoveringSpecification.scala)
