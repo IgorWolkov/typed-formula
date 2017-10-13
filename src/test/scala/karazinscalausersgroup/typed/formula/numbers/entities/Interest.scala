@@ -1,5 +1,6 @@
 package karazinscalausersgroup.typed.formula.numbers.entities
 
+import karazinscalausersgroup.typed.formula.generic.entity
 import karazinscalausersgroup.typed.formula.numbers.Number
 
 /**
@@ -7,43 +8,25 @@ import karazinscalausersgroup.typed.formula.numbers.Number
   */
 trait Interest
 
-// TODO: Add macros to generate this boilerplate
+@entity
 case class PreviousInterest(amount: Number, expressions: List[Covering] = Nil)
   extends InstallmentEntity {
-
-  override type Self = PreviousInterest
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[Covering]): Self = copy(amount, expressions)
 
   // TODO: Rewrite, add additional information
   override def toString = s"PreviousInterest(totalAmount: $v, amount: $amount, coverings: ${ expressions mkString ", " })"
 }
 
-// TODO: Add macros to generate this boilerplate
+@entity
 case class CurrentInterest(amount: Number, expressions: List[Covering] = Nil)
   extends InstallmentEntity {
-
-  override type Self = CurrentInterest
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[Covering]): Self = copy(amount, expressions)
 
   // TODO: Rewrite, add additional information
   override def toString = s"CurrentInterest(totalAmount: $v, amount: $amount, coverings: ${ expressions mkString ", " })"
 }
 
-// TODO: Add macros to generate this boilerplate
+@entity
 case class NextInterest(amount: Number, expressions: List[Covering] = Nil)
   extends InstallmentEntity {
-
-  override type Self = NextInterest
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[Covering]): Self = copy(amount, expressions)
 
   // TODO: Rewrite, add additional information
   override def toString = s"NextInterest(totalAmount: $v, amount: $amount, coverings: ${ expressions mkString ", " })"

@@ -1,6 +1,7 @@
 package karazinscalausersgroup.typed.formula.numbers.entities
 
 import karazinscalausersgroup.typed.formula.Limit
+import karazinscalausersgroup.typed.formula.generic.entity
 import karazinscalausersgroup.typed.formula.numbers.Number
 import karazinscalausersgroup.typed.formula.numbers.Number.Zero
 
@@ -50,14 +51,8 @@ abstract class Installment(val entities: List[InstallmentEntity]) extends Foldab
   lazy val amount = v
 }
 
-// TODO: Add macros to generate this boilerplate
+@entity
 case class PreviousInstallment(expressions: List[InstallmentEntity]) extends Installment(expressions) {
-
-  type Self = PreviousInstallment
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
   def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
 
@@ -71,14 +66,8 @@ case class PreviousInstallment(expressions: List[InstallmentEntity]) extends Ins
 
 }
 
-// TODO: Add macros to generate this boilerplate
+@entity
 case class CurrentInstallment(expressions: List[InstallmentEntity]) extends Installment(expressions) {
-
-  override type Self = CurrentInstallment
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
   def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
 
@@ -92,14 +81,8 @@ case class CurrentInstallment(expressions: List[InstallmentEntity]) extends Inst
 
 }
 
-// TODO: Add macros to generate this boilerplate
+@entity
 case class NextInstallment(expressions: List[InstallmentEntity]) extends Installment(expressions) {
-
-  override type Self = NextInstallment
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
   def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
 
@@ -113,13 +96,8 @@ case class NextInstallment(expressions: List[InstallmentEntity]) extends Install
 
 }
 
+@entity
 case class ExtraInstallment(expressions: List[InstallmentEntity]) extends Installment(expressions) {
-
-  override type Self = ExtraInstallment
-
-  def copyEntity(): Self = copy()
-
-  def copyEntities(expressions: List[InstallmentEntity]): Self = copy(expressions)
 
   def addEntity(entity: InstallmentEntity): Self = copyEntities(expressions ::: entity :: Nil)
 
