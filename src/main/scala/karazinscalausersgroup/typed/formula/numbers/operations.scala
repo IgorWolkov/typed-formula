@@ -50,7 +50,7 @@ object operations {
   // Unary minus
   class ~[+E <: Expression[Number]](val expression: E)
     extends Unary[Number, E] {
-    val v: Number = Number(0) - expression.v
+    val v: Number = -expression.v
 
     override def toString = s"-${expression.toString})"
   }
